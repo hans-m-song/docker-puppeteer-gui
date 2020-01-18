@@ -2,8 +2,7 @@
 
 ## Linux
 
-<!-- run `xauth.sh` to generate xauthority for docker -->
-`xhost +local` to allow local connections (and docker) to access display (don't forget to run `xhost -local` to disallow connections again)
+`./xauth.sh`
 `docker-compose up puppeteer`
 
 ## MacOS
