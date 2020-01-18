@@ -7,11 +7,9 @@ RUN apt-get update -y && apt-get install -y \
 
 ARG WORKER_USER=pptruser
 ARG WORKER_DIR=/home/${WORKER_USER}/worker
-ARG DISPLAY
 
 ENV WORKER_USER=${WORKER_USER}
 ENV WORKER_DIR=${WORKER_DIR}
-ENV DISPLAY=${DISPLAY}
 
 RUN echo ${WORKER_USER} ${WORKER_DIR}
 

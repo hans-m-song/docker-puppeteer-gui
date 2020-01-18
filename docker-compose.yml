@@ -10,11 +10,23 @@ services:
       args:
         - WORKER_USER=worker
         - WORKER_DIR=/home/worker/worker
+    environment:  
         - DISPLAY=${DISPLAY}
+        - XAUTHORITY=/tmp/.docker.xauth
     volumes:
       - ${PWD}/node_modules:/home/worker/worker/node_modules
       - /tmp/.X11-unix:/tmp/.X11-unix
+      - /tmp/.docker.xauth:/tmp/.docker.xauth
       - /root/.Xauthority:/root/.Xauthority:rw
     privileged: true
     init: true
-    network_mode: host
+
+  xeyes:
+    image: gns3/xeyes
+    environment:  
+        - DISPLAY=${DISPLAY}
+        - XAUTHORITY=/tmp/.docker.xauth
+    volumes: 
+      - /tmp/.X11-unix:/tmp/.X11-unix
+      - /tmp/.docker.xauth:/tmp/.docker.xauth
+      - /root/.Xauthority:/root/.Xauthority:rw

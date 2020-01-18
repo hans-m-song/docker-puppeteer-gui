@@ -5,7 +5,6 @@ const fs = require('fs');
     const browser = await puppeteer.launch({
         headless: false, devtools: false, defaultViewport: null,
         args: [
-            '--no-sandbox',
             '--ignore-certificate-errors',
             '--disable-setuid-sandbox',
             '--disable-dev-shm-usage',
