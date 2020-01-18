@@ -1,28 +1,32 @@
-FROM node:8-stretch
+FROM node:8-slim
 
-RUN wget -q -O - https://dl-ssl.google.com/linux/linux_signing_key.pub | apt-key add - \
-    && sh -c 'echo "deb [arch=amd64] http://dl.google.com/linux/chrome/deb/ stable main" >> /etc/apt/sources.list.d/google.list' \
-    && apt-get update \
-    && apt-get install -y google-chrome-unstable fonts-ipafont-gothic fonts-wqy-zenhei fonts-thai-tlwg fonts-kacst fonts-freefont-ttf \
-      --no-install-recommends \
-    && rm -rf /var/lib/apt/lists/*
+RUN apt-get update -y && apt-get install -y \
+    chromium \
+    libatk-bridge2.0-0 \
+    libgtk-3-0
 
-RUN wget https://github.com/Yelp/dumb-init/releases/download/v1.2.1/dumb-init_1.2.1_amd64.deb
-RUN dpkg -i dumb-init_*.deb
+ARG WORKER_USER=pptruser
+ARG WORKER_DIR=/home/${WORKER_USER}/worker
+ARG DISPLAY
 
-ENV WORKER_USER=pptruser
-ENV WORKER_DIR=/home/${WORKER_USER}/worker
+ENV WORKER_USER=${WORKER_USER}
+ENV WORKER_DIR=${WORKER_DIR}
+ENV DISPLAY=${DISPLAY}
+
+RUN echo ${WORKER_USER} ${WORKER_DIR}
+
 RUN groupadd -r ${WORKER_USER} \
     && useradd -r -g ${WORKER_USER} -G audio,video ${WORKER_USER} \
-    && mkdir -p ${WORKER_DIR}
+    && mkdir -p ${WORKER_DIR} \
+    && mkdir -p /home/${WORKER_USER}/Downloads \
+    && chown -R ${WORKER_USER}:${WORKER_USER} /home/${WORKER_USER}
 
 WORKDIR ${WORKER_DIR}
-COPY ./package*.json index.js ./
 
-RUN mkdir -p /home/${WORKER_USER}/Downloads \
-    && chown -R ${WORKER_USER}:${WORKER_USER} /home/${WORKER_USER}
+COPY --chown=${WORKER_USER} ./package*.json index.js ./
+
+# RUN npm install
 
 USER ${WORKER_USER}
 
-ENTRYPOINT ["/usr/bin/dumb-init", "--"]
 CMD ["node", "./index.js"]

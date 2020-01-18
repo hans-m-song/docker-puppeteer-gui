@@ -1,0 +1,20 @@
+version: '3.7'
+
+services: 
+
+  puppeteer:
+    image: puppeteer
+    build:
+      context: .
+      dockerfile: dockerfile
+      args:
+        - WORKER_USER=worker
+        - WORKER_DIR=/home/worker/worker
+        - DISPLAY=${DISPLAY}
+    volumes:
+      - ${PWD}/node_modules:/home/worker/worker/node_modules
+      - /tmp/.X11-unix:/tmp/.X11-unix
+      - /root/.Xauthority:/root/.Xauthority:rw
+    privileged: true
+    init: true
+    network_mode: host
